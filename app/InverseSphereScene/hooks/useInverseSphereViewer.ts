@@ -2,20 +2,17 @@
 
 import { useEffect, type RefObject } from "react";
 import * as THREE from "three";
-import { createEquirectangularMaterial, createPerspectiveMaterial } from "../materials/panoramaMaterials";
-import type { ProjectionMode } from "../types";
+import { createEquirectangularMaterial } from "../materials/equirectangularMaterial";
 import { parseXmpFromJpeg } from "../xmp/parseXmpFromJpeg";
 
 type UseInverseSphereViewerArgs = {
   mountRef: RefObject<HTMLDivElement | null>;
   panoramaSrc: string;
-  projectionMode: ProjectionMode;
 };
 
 export function useInverseSphereViewer({
   mountRef,
   panoramaSrc,
-  projectionMode,
 }: UseInverseSphereViewerArgs) {
   useEffect(() => {
     const mount = mountRef.current;
@@ -30,6 +27,8 @@ export function useInverseSphereViewer({
       0.1,
       1000
     );
+    const baseFov = camera.fov;
+    const basePointerSensitivity = 0.005;
     camera.position.set(0, 0, 0);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -38,10 +37,7 @@ export function useInverseSphereViewer({
     mount.appendChild(renderer.domElement);
 
     const geometry = new THREE.SphereGeometry(20, 64, 64);
-    const material =
-      projectionMode === "perspective"
-        ? createPerspectiveMaterial()
-        : createEquirectangularMaterial();
+    const material = createEquirectangularMaterial();
 
     const mesh = new THREE.Mesh(geometry, material);
     scene.add(mesh);
@@ -86,7 +82,7 @@ export function useInverseSphereViewer({
           }
         );
 
-        texture.colorSpace = THREE.SRGBColorSpace;
+        texture.colorSpace = THREE.LinearSRGBColorSpace;
         texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
         texture.wrapS = THREE.ClampToEdgeWrapping;
         texture.wrapT = THREE.ClampToEdgeWrapping;
@@ -127,13 +123,15 @@ export function useInverseSphereViewer({
 
       const deltaX = event.clientX - state.lastX;
       const deltaY = event.clientY - state.lastY;
+      const pointerSensitivity =
+        basePointerSensitivity * (camera.fov / baseFov);
 
-      state.yaw -= deltaX * 0.005;
-      state.pitch -= deltaY * 0.005;
+      state.yaw -= deltaX * pointerSensitivity;
+      state.pitch -= deltaY * pointerSensitivity;
       state.pitch = THREE.MathUtils.clamp(
         state.pitch,
-        -Math.PI / 2 + 0.05,
-        Math.PI / 2 - 0.05
+        -Math.PI / 2.0,
+        Math.PI / 2.0
       );
 
       state.lastX = event.clientX;
@@ -148,7 +146,7 @@ export function useInverseSphereViewer({
 
     const onWheel = (event: WheelEvent) => {
       event.preventDefault();
-      camera.fov = THREE.MathUtils.clamp(camera.fov + event.deltaY * 0.02, 40, 90);
+      camera.fov = THREE.MathUtils.clamp(camera.fov + event.deltaY * 0.02, 1, 100);
       camera.updateProjectionMatrix();
     };
 
@@ -163,10 +161,10 @@ export function useInverseSphereViewer({
     };
 
     window.addEventListener("resize", resize);
-    renderer.domElement.addEventListener("pointerdown", onPointerDown);
+    window.addEventListener("pointerdown", onPointerDown);
     window.addEventListener("pointermove", onPointerMove);
     window.addEventListener("pointerup", onPointerUp);
-    renderer.domElement.addEventListener("wheel", onWheel, { passive: false });
+    window.addEventListener("wheel", onWheel, { passive: false });
 
     let animationFrame = 0;
     const animate = () => {
@@ -180,10 +178,10 @@ export function useInverseSphereViewer({
       destroyed = true;
       window.cancelAnimationFrame(animationFrame);
       window.removeEventListener("resize", resize);
-      renderer.domElement.removeEventListener("pointerdown", onPointerDown);
+      window.removeEventListener("pointerdown", onPointerDown);
       window.removeEventListener("pointermove", onPointerMove);
       window.removeEventListener("pointerup", onPointerUp);
-      renderer.domElement.removeEventListener("wheel", onWheel);
+      window.removeEventListener("wheel", onWheel);
 
       geometry.dispose();
       material.dispose();
@@ -194,5 +192,5 @@ export function useInverseSphereViewer({
         mount.removeChild(renderer.domElement);
       }
     };
-  }, [mountRef, panoramaSrc, projectionMode]);
+  }, [mountRef, panoramaSrc]);
 }

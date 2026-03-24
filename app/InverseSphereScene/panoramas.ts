@@ -13,4 +13,8 @@ export const PANORAMAS: PanoramaItem[] = [
     label: "Room 3",
     src: "/panoramas/Dartmoor_Forest_-_Church_of_St_Michael,_Princetown_-_20170705154700.jpg",
   },
+  {
+    label: "Debug Box",
+    src: "/panoramas/Debug_Box.jpg",
+  },
 ];
