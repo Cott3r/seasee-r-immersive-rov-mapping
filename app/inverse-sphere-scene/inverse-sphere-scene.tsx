@@ -2,8 +2,8 @@
 
 import { useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { PanoramaSelector } from "./components/PanoramaSelector";
-import { useInverseSphereViewer } from "./hooks/useInverseSphereViewer";
+import { PanoramaSelector } from "./components/panorama-selector";
+import { useInverseSphereViewer } from "./hooks/use-inverse-sphere-viewer";
 import type { PanoramaItem } from "./types";
 
 interface InverseSphereSceneProps {

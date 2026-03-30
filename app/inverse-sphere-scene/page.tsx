@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import InverseSphereScene from "./InverseSphereScene";
+import InverseSphereScene from "./inverse-sphere-scene";
 import { getPanoramaItems } from "./panoramas";
 
 export default async function Page() {

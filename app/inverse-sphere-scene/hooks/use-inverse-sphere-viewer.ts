@@ -2,8 +2,8 @@
 
 import { useEffect, type RefObject } from "react";
 import * as THREE from "three";
-import { createEquirectangularMaterial } from "../materials/equirectangularMaterial";
-import { parseXmpFromJpeg } from "../xmp/parseXmpFromJpeg";
+import { createEquirectangularMaterial } from "../materials/equirectangular-material";
+import { parseXmpFromJpeg } from "../../utils/parse-xmp-from-jpeg";
 
 type UseInverseSphereViewerArgs = {
   mountRef: RefObject<HTMLDivElement | null>;

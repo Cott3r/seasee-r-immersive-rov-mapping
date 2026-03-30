@@ -1,4 +1,4 @@
-import type { XmpData } from "../types";
+import type { XmpData } from "../inverse-sphere-scene/types";
 
 export function parseXmpFromJpeg(arrayBuffer: ArrayBuffer): XmpData | null {
   const bytes = new Uint8Array(arrayBuffer);
