@@ -90,14 +90,14 @@ Starts the production server, waits for it to be ready, then runs E2E tests.
 
 ## Available Scripts
 
-| Script | Description |
-|--------|-------------|
-| `npm run dev` | Start development server with hot reload |
-| `npm run build` | Create optimized production build |
-| `npm start` | Start production server |
-| `npm run lint` | Run ESLint to check code quality |
-| `npm run test:unit` | Run unit tests once |
-| `npm run test:e2e` | Run end-to-end tests once |
+| Script                | Description                                    |
+|-----------------------|------------------------------------------------|
+| `npm run dev`         | Start development server with hot reload       |
+| `npm run build`       | Create optimized production build              |
+| `npm start`           | Start production server                        |
+| `npm run lint`        | Run ESLint to check code quality               |
+| `npm run test:unit`   | Run unit tests once                            |
+| `npm run test:e2e`    | Run end-to-end tests once                      |
 | `npm run test:e2e:ci` | Run E2E tests in CI mode (with server startup) |
 
 
@@ -136,7 +136,7 @@ Ensure your deployment platform has:
 
 ## License
 
-This project is licensed under the GNU General Public License v3.0 - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the GNU General Public License v3.0 – see the [LICENSE](LICENSE) file for details.
 
 ## Tech Stack
 

@@ -18,7 +18,7 @@ export default async function Home() {
           {panoramas.map((panorama, index) => (
             <Link
               key={panorama.filename}
-              href={`/InverseSphereScene?panorama=${index}`}
+              href={`/inverse-sphere-scene?panorama=${index}`}
               className="group relative overflow-hidden rounded-lg bg-white shadow-md transition-all hover:shadow-xl dark:bg-zinc-900"
             >
               <div className="relative aspect-video w-full overflow-hidden bg-zinc-200 dark:bg-zinc-800">
