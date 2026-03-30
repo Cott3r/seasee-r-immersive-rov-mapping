@@ -53,7 +53,7 @@ describe('getPanoramas', () => {
 
   it('should filter and return only image files', async () => {
     vi.mocked(fs.existsSync).mockReturnValue(true);
-    // @ts-ignore
+    // @ts-expect-error Type string is not assignable to type Dirent<NonSharedBuffer>
     vi.mocked(fs.promises.readdir).mockResolvedValue([
       'image1.jpg',
       'image2.png',
@@ -79,7 +79,7 @@ describe('getPanoramas', () => {
 
   it('should generate user-friendly names from filenames', async () => {
     vi.mocked(fs.existsSync).mockReturnValue(true);
-    // @ts-ignore
+    // @ts-expect-error Type string is not assignable to type Dirent<NonSharedBuffer>
     vi.mocked(fs.promises.readdir).mockResolvedValue([
       'underwater_scene.jpg',
       'coral-reef.png',
@@ -97,7 +97,7 @@ describe('getPanoramas', () => {
 
   it('should sort panoramas alphabetically by name', async () => {
     vi.mocked(fs.existsSync).mockReturnValue(true);
-    // @ts-ignore
+    // @ts-expect-error Type string is not assignable to type Dirent<NonSharedBuffer>
     vi.mocked(fs.promises.readdir).mockResolvedValue([
       'zebra.jpg',
       'alpha.jpg',
@@ -117,7 +117,7 @@ describe('getPanoramas', () => {
 
   it('should handle mixed case file extensions', async () => {
     vi.mocked(fs.existsSync).mockReturnValue(true);
-    // @ts-ignore
+    // @ts-expect-error Type string is not assignable to type Dirent<NonSharedBuffer>
     vi.mocked(fs.promises.readdir).mockResolvedValue([
       'image1.JPG',
       'image2.PNG',
@@ -136,7 +136,7 @@ describe('getPanoramas', () => {
 
   it('should return empty array when no image files exist', async () => {
     vi.mocked(fs.existsSync).mockReturnValue(true);
-    // @ts-ignore
+    // @ts-expect-error Type string is not assignable to type Dirent<NonSharedBuffer>
     vi.mocked(fs.promises.readdir).mockResolvedValue([
       'document.txt',
       'video.mp4',
@@ -150,7 +150,7 @@ describe('getPanoramas', () => {
 
   it('should handle empty directory', async () => {
     vi.mocked(fs.existsSync).mockReturnValue(true);
-    // @ts-ignore
+    // @ts-expect-error Type string is not assignable to type Dirent<NonSharedBuffer>
     vi.mocked(fs.promises.readdir).mockResolvedValue([] as string[]);
 
     const result = await getPanoramas();
@@ -160,7 +160,7 @@ describe('getPanoramas', () => {
 
   it('should handle filenames with multiple hyphens and underscores', async () => {
     vi.mocked(fs.existsSync).mockReturnValue(true);
-    // @ts-ignore
+    // @ts-expect-error Type string is not assignable to type Dirent<NonSharedBuffer>
     vi.mocked(fs.promises.readdir).mockResolvedValue([
       'my-awesome_underwater-scene_2024.jpg',
     ] as string[]);
@@ -172,7 +172,7 @@ describe('getPanoramas', () => {
 
   it('should handle filenames with no special characters', async () => {
     vi.mocked(fs.existsSync).mockReturnValue(true);
-    // @ts-ignore
+    // @ts-expect-error Type string is not assignable to type Dirent<NonSharedBuffer>
     vi.mocked(fs.promises.readdir).mockResolvedValue([
       'panorama.jpg',
     ] as string[]);
@@ -184,7 +184,7 @@ describe('getPanoramas', () => {
 
   it('should return correct Panorama interface structure', async () => {
     vi.mocked(fs.existsSync).mockReturnValue(true);
-    // @ts-ignore
+    // @ts-expect-error Type string is not assignable to type Dirent<NonSharedBuffer>
     vi.mocked(fs.promises.readdir).mockResolvedValue(['test.jpg'] as string[]);
 
     const result = await getPanoramas();
@@ -197,7 +197,7 @@ describe('getPanoramas', () => {
 
   it('should handle single word filenames correctly', async () => {
     vi.mocked(fs.existsSync).mockReturnValue(true);
-    // @ts-ignore
+    // @ts-expect-error Type string is not assignable to type Dirent<NonSharedBuffer>
     vi.mocked(fs.promises.readdir).mockResolvedValue([
       'ocean.jpg',
       'reef.png',
@@ -213,7 +213,7 @@ describe('getPanoramas', () => {
 
   it('should handle filenames with numbers', async () => {
     vi.mocked(fs.existsSync).mockReturnValue(true);
-    // @ts-ignore
+    // @ts-expect-error Type string is not assignable to type Dirent<NonSharedBuffer>
     vi.mocked(fs.promises.readdir).mockResolvedValue([
       'dive-site-123.jpg',
       '2024-expedition.png',
