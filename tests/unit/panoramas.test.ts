@@ -62,7 +62,7 @@ describe('getPanoramas', () => {
       'document.pdf',
       'script.js',
       'README.md',
-    ] as any);
+    ] as string[]);
 
     const result = await getPanoramas();
 
@@ -82,7 +82,7 @@ describe('getPanoramas', () => {
       'underwater_scene.jpg',
       'coral-reef.png',
       'deep_ocean-view.jpeg',
-    ] as any);
+    ] as string[]);
 
     const result = await getPanoramas();
 
@@ -100,7 +100,7 @@ describe('getPanoramas', () => {
       'alpha.jpg',
       'beta.jpg',
       'gamma.jpg',
-    ] as any);
+    ] as string[]);
 
     const result = await getPanoramas();
 
@@ -118,7 +118,7 @@ describe('getPanoramas', () => {
       'image1.JPG',
       'image2.PNG',
       'image3.JpEg',
-    ] as any);
+    ] as string[]);
 
     const result = await getPanoramas();
 
@@ -136,7 +136,7 @@ describe('getPanoramas', () => {
       'document.txt',
       'video.mp4',
       'audio.mp3',
-    ] as any);
+    ] as string[]);
 
     const result = await getPanoramas();
 
@@ -145,7 +145,7 @@ describe('getPanoramas', () => {
 
   it('should handle empty directory', async () => {
     vi.mocked(fs.existsSync).mockReturnValue(true);
-    vi.mocked(fs.promises.readdir).mockResolvedValue([] as any);
+    vi.mocked(fs.promises.readdir).mockResolvedValue([] as string[]);
 
     const result = await getPanoramas();
 
@@ -156,7 +156,7 @@ describe('getPanoramas', () => {
     vi.mocked(fs.existsSync).mockReturnValue(true);
     vi.mocked(fs.promises.readdir).mockResolvedValue([
       'my-awesome_underwater-scene_2024.jpg',
-    ] as any);
+    ] as string[]);
 
     const result = await getPanoramas();
 
@@ -167,7 +167,7 @@ describe('getPanoramas', () => {
     vi.mocked(fs.existsSync).mockReturnValue(true);
     vi.mocked(fs.promises.readdir).mockResolvedValue([
       'panorama.jpg',
-    ] as any);
+    ] as string[]);
 
     const result = await getPanoramas();
 
@@ -176,7 +176,7 @@ describe('getPanoramas', () => {
 
   it('should return correct Panorama interface structure', async () => {
     vi.mocked(fs.existsSync).mockReturnValue(true);
-    vi.mocked(fs.promises.readdir).mockResolvedValue(['test.jpg'] as any);
+    vi.mocked(fs.promises.readdir).mockResolvedValue(['test.jpg'] as string[]);
 
     const result = await getPanoramas();
 
@@ -191,7 +191,7 @@ describe('getPanoramas', () => {
     vi.mocked(fs.promises.readdir).mockResolvedValue([
       'ocean.jpg',
       'reef.png',
-    ] as any);
+    ] as string[]);
 
     const result = await getPanoramas();
 
@@ -206,7 +206,7 @@ describe('getPanoramas', () => {
     vi.mocked(fs.promises.readdir).mockResolvedValue([
       'dive-site-123.jpg',
       '2024-expedition.png',
-    ] as any);
+    ] as string[]);
 
     const result = await getPanoramas();
 

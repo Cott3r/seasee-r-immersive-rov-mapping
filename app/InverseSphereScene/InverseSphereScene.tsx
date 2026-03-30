@@ -1,7 +1,7 @@
 "use client";
 
-import { useRef, useState, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRef } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import { PanoramaSelector } from "./components/PanoramaSelector";
 import { useInverseSphereViewer } from "./hooks/useInverseSphereViewer";
 import type { PanoramaItem } from "./types";
@@ -12,23 +12,21 @@ interface InverseSphereSceneProps {
 
 export default function InverseSphereScene({ panoramas }: InverseSphereSceneProps) {
   const mountRef = useRef<HTMLDivElement | null>(null);
+  const router = useRouter();
   const searchParams = useSearchParams();
   const panoramaParam = searchParams.get("panorama");
   
   // Initialize with URL parameter if provided, otherwise default to 0
-  const initialIndex = panoramaParam !== null 
+  const selectedIndex = panoramaParam !== null
     ? Math.max(0, Math.min(parseInt(panoramaParam, 10) || 0, panoramas.length - 1))
     : 0;
-  
-  const [selectedIndex, setSelectedIndex] = useState(initialIndex);
 
-  // Update selected index if URL parameter changes
-  useEffect(() => {
-    if (panoramaParam !== null) {
-      const index = Math.max(0, Math.min(parseInt(panoramaParam, 10) || 0, panoramas.length - 1));
-      setSelectedIndex(index);
-    }
-  }, [panoramaParam, panoramas.length]);
+  const handlePanoramaSelect = (index: number) => {
+    // Update URL with new panorama parameter
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("panorama", index.toString());
+    router.push(`?${params.toString()}`, { scroll: false });
+  };
 
   useInverseSphereViewer({
     mountRef,
@@ -40,7 +38,7 @@ export default function InverseSphereScene({ panoramas }: InverseSphereSceneProp
       <PanoramaSelector
         panoramas={panoramas}
         selectedIndex={selectedIndex}
-        onSelect={setSelectedIndex}
+        onSelect={handlePanoramaSelect}
       />
 
       <div className="pointer-events-none absolute bottom-4 left-4 z-10 rounded-md bg-black/40 px-3 py-2 text-sm text-white">
