@@ -1,12 +1,16 @@
 import fs from "fs";
 import path from "path";
-import type { PanoramaItem } from "./types";
+
+export interface Panorama {
+  name: string;
+  filename: string;
+}
 
 /**
  * Safely reads panorama files from the public/panoramas directory
- * @returns Array of panorama items with label and src
+ * @returns Array of panorama objects with name and filename
  */
-export async function getPanoramaItems(): Promise<PanoramaItem[]> {
+export async function getPanoramas(): Promise<Panorama[]> {
   try {
     // Get the absolute path to the panoramas directory
     const panoramasDir = path.join(process.cwd(), "public", "panoramas");
@@ -36,25 +40,25 @@ export async function getPanoramaItems(): Promise<PanoramaItem[]> {
       return imageExtensions.includes(ext);
     });
 
-    // Map files to panorama items
-    const panoramas: PanoramaItem[] = imageFiles.map((filename) => {
-      // Generate a user-friendly label from the filename
+    // Map files to panorama objects
+    const panoramas: Panorama[] = imageFiles.map((filename) => {
+      // Generate a user-friendly name from the filename
       const nameWithoutExt = path.parse(filename).name;
       // Replace underscores and hyphens with spaces, capitalize words
-      const label = nameWithoutExt
+      const name = nameWithoutExt
         .replace(/[-_]/g, " ")
         .split(" ")
         .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
         .join(" ");
 
       return {
-        label,
-        src: `/panoramas/${filename}`,
+        name,
+        filename,
       };
     });
 
-    // Sort alphabetically by label
-    panoramas.sort((a, b) => a.label.localeCompare(b.label));
+    // Sort alphabetically by name
+    panoramas.sort((a, b) => a.name.localeCompare(b.name));
 
     return panoramas;
   } catch (error) {

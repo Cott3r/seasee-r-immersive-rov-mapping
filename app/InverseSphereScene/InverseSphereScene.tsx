@@ -1,23 +1,44 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { PanoramaSelector } from "./components/PanoramaSelector";
 import { useInverseSphereViewer } from "./hooks/useInverseSphereViewer";
-import { PANORAMAS } from "./panoramas";
+import type { PanoramaItem } from "./types";
 
-export default function InverseSphereScene() {
+interface InverseSphereSceneProps {
+  panoramas: PanoramaItem[];
+}
+
+export default function InverseSphereScene({ panoramas }: InverseSphereSceneProps) {
   const mountRef = useRef<HTMLDivElement | null>(null);
-  const [selectedIndex, setSelectedIndex] = useState(0);
+  const searchParams = useSearchParams();
+  const panoramaParam = searchParams.get("panorama");
+  
+  // Initialize with URL parameter if provided, otherwise default to 0
+  const initialIndex = panoramaParam !== null 
+    ? Math.max(0, Math.min(parseInt(panoramaParam, 10) || 0, panoramas.length - 1))
+    : 0;
+  
+  const [selectedIndex, setSelectedIndex] = useState(initialIndex);
+
+  // Update selected index if URL parameter changes
+  useEffect(() => {
+    if (panoramaParam !== null) {
+      const index = Math.max(0, Math.min(parseInt(panoramaParam, 10) || 0, panoramas.length - 1));
+      setSelectedIndex(index);
+    }
+  }, [panoramaParam, panoramas.length]);
 
   useInverseSphereViewer({
     mountRef,
-    panoramaSrc: PANORAMAS[selectedIndex].src,
+    panoramaSrc: panoramas[selectedIndex]?.src || "",
   });
 
   return (
     <main className="relative h-screen w-screen overflow-hidden bg-slate-950">
       <PanoramaSelector
-        panoramas={PANORAMAS}
+        panoramas={panoramas}
         selectedIndex={selectedIndex}
         onSelect={setSelectedIndex}
       />
