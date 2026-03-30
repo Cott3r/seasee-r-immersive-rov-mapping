@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { getPanoramas } from "./panoramas";
+import { getPanoramas } from '@/utils/panorama-file-scanner';
 
 export default async function Home() {
   const panoramas = await getPanoramas();
