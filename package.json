@@ -12,6 +12,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
+    "test:unit": "vitest run tests/unit",
+    "test:unit:watch": "vitest tests/unit",
     "test:e2e": "vitest run tests/e2e",
     "test:e2e:watch": "vitest tests/e2e",
     "test:e2e:ci": "start-server-and-test start http://localhost:3000 test:e2e"
