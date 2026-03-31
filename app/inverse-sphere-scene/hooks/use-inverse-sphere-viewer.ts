@@ -124,7 +124,7 @@ export function useInverseSphereViewer({
     updateCameraRotation();
 
     // Expose to window for testing purposes
-    if (typeof window !== "undefined" && process.env.NODE_ENV === 'development') {
+    if (typeof window !== "undefined" && (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test')) {
       (window as Window).camera = camera;
       (window as Window).renderer = renderer;
       (window as Window).scene = scene;
