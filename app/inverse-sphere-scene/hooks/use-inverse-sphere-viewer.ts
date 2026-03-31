@@ -45,6 +45,7 @@ export function useInverseSphereViewer({
     const textureLoader = new THREE.TextureLoader();
     let currentTexture: THREE.Texture | null = null;
     let destroyed = false;
+    const pendingObjectUrls = new Set<string>();
 
     const applyTexture = async (src: string) => {
       try {
@@ -54,12 +55,19 @@ export function useInverseSphereViewer({
 
         const blob = new Blob([arrayBuffer]);
         const objectUrl = URL.createObjectURL(blob);
+        
+        // Track the ObjectURL for cleanup
+        pendingObjectUrls.add(objectUrl);
 
         const texture = textureLoader.load(
           objectUrl,
           () => {
+            // Remove from pending set
+            pendingObjectUrls.delete(objectUrl);
+            
             if (destroyed) {
               URL.revokeObjectURL(objectUrl);
+              texture.dispose();
               return;
             }
 
@@ -77,8 +85,11 @@ export function useInverseSphereViewer({
           },
           undefined,
           () => {
+            // Remove from pending set and cleanup
+            pendingObjectUrls.delete(objectUrl);
             console.error(`Failed to load panorama texture: ${src}`);
             URL.revokeObjectURL(objectUrl);
+            texture.dispose();
           }
         );
 
@@ -113,7 +124,7 @@ export function useInverseSphereViewer({
     updateCameraRotation();
 
     // Expose to window for testing purposes
-    if (typeof window !== "undefined") {
+    if (typeof window !== "undefined" && process.env.NODE_ENV === 'development') {
       (window as Window).camera = camera;
       (window as Window).renderer = renderer;
       (window as Window).scene = scene;
@@ -185,6 +196,13 @@ export function useInverseSphereViewer({
 
     return () => {
       destroyed = true;
+      
+      // Revoke any pending ObjectURLs to prevent memory leaks
+      pendingObjectUrls.forEach(url => {
+        URL.revokeObjectURL(url);
+      });
+      pendingObjectUrls.clear();
+      
       window.cancelAnimationFrame(animationFrame);
       window.removeEventListener("resize", resize);
       window.removeEventListener("pointerdown", onPointerDown);

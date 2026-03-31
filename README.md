@@ -146,6 +146,16 @@ This project is licensed under the GNU General Public License v3.0 – see the [
 - **Language**: [TypeScript 5](https://www.typescriptlang.org/)
 - **Testing**: [Vitest 4.1](https://vitest.dev/) + [Puppeteer 24](https://pptr.dev/)
 
+## Code Quality & Review
+
+This project has undergone a comprehensive AI-powered code review. The detailed analysis, including security, performance, and maintainability assessments, is available in the [AI Code Review Artifact](AI_Code_Review_Artifact.md).
+
+**Status**: Based on this review summary, all critical issues have been fixed.
+
+Key improvements implemented:
+- ✅ Removed global object exposure in production builds
+- ✅ Fixed texture loading cleanup and memory leak prevention
+
 ## Acknowledgments
 
 - Developed as part of the Google Summer of Code (GSoC) Master's Thesis project
