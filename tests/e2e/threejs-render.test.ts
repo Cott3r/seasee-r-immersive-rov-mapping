@@ -43,7 +43,7 @@ describe('THREE.js Render Tests', () => {
     // Navigate to main page
     await page.goto(BASE_URL, {
       waitUntil: 'domcontentloaded',
-      timeout: 30000,
+      timeout: 10000,
     });
 
     //Set viewport to 1280x720
@@ -60,13 +60,25 @@ describe('THREE.js Render Tests', () => {
     // Navigate to main page
     await page.goto(BASE_URL, {
       waitUntil: 'domcontentloaded',
-      timeout: 30000,
-    });
-
-    // Wait for images to be available
-    await page.waitForSelector('a[href^="/inverse-sphere-scene"]', {
       timeout: 10000,
     });
+
+    // Wait for the gallery container to appear
+    await page.waitForSelector('div.grid', { timeout: 10000 });
+
+    // Scroll all images to trigger lazy load
+    const imageLinks = await page.$$('a[href^="/inverse-sphere-scene"]');
+    for (const link of imageLinks) {
+      await link.scrollIntoView();
+    }
+
+    // Wait for all images to finish loading
+    const images = await page.$$('a[href^="/inverse-sphere-scene"] img');
+    await Promise.all(
+      images.map(img =>
+        page.evaluate(img => img.complete && img.naturalWidth > 0, img)
+      )
+    );
 
     // Take screenshot of gallery page
     await page.screenshot({
@@ -76,7 +88,7 @@ describe('THREE.js Render Tests', () => {
 
     // Click the first panorama image link and wait for navigation
     await Promise.all([
-      page.waitForNavigation({ waitUntil: 'networkidle0', timeout: 30000 }),
+      page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 10000 }),
       page.click('a[href^="/inverse-sphere-scene"]'),
     ]);
 
@@ -117,7 +129,7 @@ describe('THREE.js Render Tests', () => {
     // Navigate to inverse-sphere-scene with panorama=0
     await page.goto(`${BASE_URL}/inverse-sphere-scene?panorama=0`, {
       waitUntil: 'networkidle0',
-      timeout: 30000,
+      timeout: 10000,
     });
 
     // Check if there's an error page
