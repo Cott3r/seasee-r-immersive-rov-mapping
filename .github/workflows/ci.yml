@@ -37,11 +37,13 @@ jobs:
     - name: Run unit tests
       run: npm run test:unit
     
-    - name: Build project
-      run: npm run build
+    - name: Build project for E2E tests
+      run: npm run build:test
 
     - name: Run E2E tests
       run: npm run test:e2e:ci
+      env:
+        NEXT_PUBLIC_ENABLE_TEST_GLOBALS: true
 
     - name: Upload screenshots
       uses: actions/upload-artifact@v4

@@ -429,4 +429,45 @@ describe('THREE.js Render Tests', () => {
     expect(canvas).toBeTruthy();
   });
 
+  it('should expose camera, renderer, scene, and cameraState to window for testing', async () => {
+    // Navigate to inverse-sphere-scene with panorama=0
+    await page.goto(`${BASE_URL}/inverse-sphere-scene?panorama=0`, {
+      waitUntil: 'networkidle0',
+      timeout: 10000,
+    });
+
+    // Check if there's an error page
+    const isErrorPage = await page.$('#__next_error__');
+    expect(isErrorPage).toBeFalsy();
+
+    // Wait for canvas element (Three.js renderer)
+    await page.waitForSelector('canvas', { timeout: 10000 });
+
+    // Check if camera is exposed on window
+    const exposedObjects = await page.evaluate(() => {
+      return {
+        hasCamera: typeof (window as Window).camera !== 'undefined',
+        hasRenderer: typeof (window as Window).renderer !== 'undefined',
+        hasScene: typeof (window as Window).scene !== 'undefined',
+        hasCameraState: typeof (window as Window).cameraState !== 'undefined',
+        hasUpdateCameraRotation: typeof (window as Window).updateCameraRotation !== 'undefined',
+        cameraType: (window as Window).camera?.type,
+        cameraIsPerspective: (window as Window).camera?.isPerspectiveCamera,
+      };
+    });
+
+    // Verify all objects are exposed
+    expect(exposedObjects.hasCamera).toBe(true);
+    expect(exposedObjects.hasRenderer).toBe(true);
+    expect(exposedObjects.hasScene).toBe(true);
+    expect(exposedObjects.hasCameraState).toBe(true);
+    expect(exposedObjects.hasUpdateCameraRotation).toBe(true);
+
+    // Verify camera is a PerspectiveCamera
+    expect(exposedObjects.cameraType).toBe('PerspectiveCamera');
+    expect(exposedObjects.cameraIsPerspective).toBe(true);
+
+    console.log('Successfully verified window object exposure:', exposedObjects);
+  });
+
 });
