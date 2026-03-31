@@ -3,7 +3,7 @@
 import { useEffect, type RefObject } from "react";
 import * as THREE from "three";
 import { createEquirectangularMaterial } from "../materials/equirectangular-material";
-import { parseXmpFromJpeg } from "../../utils/parse-xmp-from-jpeg";
+import { parseXmpFromJpeg } from "@/utils/parse-xmp-from-jpeg";
 
 type UseInverseSphereViewerArgs = {
   mountRef: RefObject<HTMLDivElement | null>;
@@ -111,6 +111,15 @@ export function useInverseSphereViewer({
     };
 
     updateCameraRotation();
+
+    // Expose to window for testing purposes
+    if (typeof window !== "undefined") {
+      (window as Window).camera = camera;
+      (window as Window).renderer = renderer;
+      (window as Window).scene = scene;
+      (window as Window).cameraState = state;
+      (window as Window).updateCameraRotation = updateCameraRotation;
+    }
 
     const onPointerDown = (event: PointerEvent) => {
       state.isDragging = true;

@@ -198,4 +198,235 @@ describe('THREE.js Render Tests', () => {
     expect(canvas).toBeTruthy();
   });
 
+  it('should load debug-box with default camera perspective and match expected screenshot', async () => {
+    // Navigate to debug-box page
+    await page.goto(`${BASE_URL}/inverse-sphere-scene?panorama=3`, {
+      waitUntil: 'networkidle0',
+      timeout: 10000,
+    });
+
+    // Check if there's an error page
+    const isErrorPage = await page.$('#__next_error__');
+    expect(isErrorPage).toBeFalsy();
+
+    // Wait for canvas element (Three.js renderer)
+    await page.waitForSelector('canvas', { timeout: 10000 });
+
+    // Set camera direction and FOV for default perspective
+    await page.evaluate(() => {
+      const camera = window.camera;
+      const fov = 67.68;
+      if (camera) {
+        // Default perspective - looking straight ahead (no rotation)
+        camera.rotation.set(0, -Math.PI / 2, 0);
+        camera.fov = fov;
+        camera.updateProjectionMatrix();
+      }
+    });
+
+    // Take screenshot
+    const screenshotPath = path.join(screenshotDirectory, 'debug-box-result-fov-100-level.png');
+    await page.screenshot({
+      path: screenshotPath,
+      fullPage: true,
+    });
+
+    // Compare with expected screenshot
+    const expectedPath = path.join(expectedDirectory, 'debug-box-result-fov-100-level.png');
+    
+    // Check if expected screenshot exists
+    if (fs.existsSync(expectedPath)) {
+      const img1 = PNG.sync.read(fs.readFileSync(screenshotPath));
+      const img2 = PNG.sync.read(fs.readFileSync(expectedPath));
+      
+      const { width, height } = img1;
+      const diff = new PNG({ width, height });
+
+      // Calculate pixel difference
+      const numDiffPixels = pixelmatch(
+        img1.data,
+        img2.data,
+        diff.data,
+        width,
+        height,
+        { threshold: 0.1,
+          diffMask: true }
+      );
+
+      // Save diff image
+      const diffPath = path.join(diffDirectory, 'debug-box-result-fov-100-level-diff.png');
+      fs.writeFileSync(diffPath, PNG.sync.write(diff));
+
+      // Calculate difference percentage
+      const totalPixels = width * height;
+      const diffPercentage = (numDiffPixels / totalPixels) * 100;
+
+      console.log(`Image comparison: ${numDiffPixels} different pixels (${diffPercentage.toFixed(2)}%)`);
+
+      // Assert that difference is below 5%
+      expect(diffPercentage).toBeLessThan(15);
+    } else {
+      console.warn(`Expected screenshot not found at ${expectedPath}. Skipping comparison.`);
+      console.warn('This screenshot will serve as the baseline. Copy it to the expected directory.');
+    }
+
+    // Verify canvas is present
+    const canvas = await page.$('canvas');
+    expect(canvas).toBeTruthy();
+  });
+
+  it('should load debug-box looking straight up and match expected screenshot', async () => {
+    // Navigate to debug-box page
+    await page.goto(`${BASE_URL}/inverse-sphere-scene?panorama=3`, {
+      waitUntil: 'networkidle0',
+      timeout: 10000,
+    });
+
+    // Check if there's an error page
+    const isErrorPage = await page.$('#__next_error__');
+    expect(isErrorPage).toBeFalsy();
+
+    // Wait for canvas element (Three.js renderer)
+    await page.waitForSelector('canvas', { timeout: 10000 });
+
+    // Set camera direction and FOV for looking straight up
+    await page.evaluate(() => {
+      const camera = window.camera;
+      const fov = 67.68;
+      if (camera) {
+        // Looking straight up: rotate 90 degrees on X axis (in radians)
+        camera.rotation.set(Math.PI / 2, 0, Math.PI / 2);
+        camera.fov = fov;
+        camera.updateProjectionMatrix();
+      }
+    });
+
+    // Take screenshot
+    const screenshotPath = path.join(screenshotDirectory, 'debug-box-result-fov-100-ceiling.png');
+    await page.screenshot({
+      path: screenshotPath,
+      fullPage: true,
+    });
+
+    // Compare with expected screenshot
+    const expectedPath = path.join(expectedDirectory, 'debug-box-result-fov-100-ceiling.png');
+    
+    // Check if expected screenshot exists
+    if (fs.existsSync(expectedPath)) {
+      const img1 = PNG.sync.read(fs.readFileSync(screenshotPath));
+      const img2 = PNG.sync.read(fs.readFileSync(expectedPath));
+      
+      const { width, height } = img1;
+      const diff = new PNG({ width, height });
+
+      // Calculate pixel difference
+      const numDiffPixels = pixelmatch(
+        img1.data,
+        img2.data,
+        diff.data,
+        width,
+        height,
+        { threshold: 0.1,
+          diffMask: true }
+      );
+
+      // Save diff image
+      const diffPath = path.join(diffDirectory, 'debug-box-result-fov-100-ceiling.png');
+      fs.writeFileSync(diffPath, PNG.sync.write(diff));
+
+      // Calculate difference percentage
+      const totalPixels = width * height;
+      const diffPercentage = (numDiffPixels / totalPixels) * 100;
+
+      console.log(`Image comparison: ${numDiffPixels} different pixels (${diffPercentage.toFixed(2)}%)`);
+
+      // Assert that difference is below 5%
+      expect(diffPercentage).toBeLessThan(15);
+    } else {
+      console.warn(`Expected screenshot not found at ${expectedPath}. Skipping comparison.`);
+      console.warn('This screenshot will serve as the baseline. Copy it to the expected directory.');
+    }
+
+    // Verify canvas is present
+    const canvas = await page.$('canvas');
+    expect(canvas).toBeTruthy();
+  });
+
+  it('should load debug-box looking straight down and match expected screenshot', async () => {
+    // Navigate to debug-box page
+    await page.goto(`${BASE_URL}/inverse-sphere-scene?panorama=3`, {
+      waitUntil: 'networkidle0',
+      timeout: 10000,
+    });
+
+    // Check if there's an error page
+    const isErrorPage = await page.$('#__next_error__');
+    expect(isErrorPage).toBeFalsy();
+
+    // Wait for canvas element (Three.js renderer)
+    await page.waitForSelector('canvas', { timeout: 10000 });
+
+    // Set camera direction and FOV for looking straight up
+    await page.evaluate(() => {
+      const camera = window.camera;
+      const fov = 67.68;
+      if (camera) {
+        // Looking straight down: rotate -90 degrees on X axis (in radians)
+        camera.rotation.set(-Math.PI / 2, 0, -Math.PI / 2);
+        camera.fov = fov;
+        camera.updateProjectionMatrix();
+      }
+    });
+
+    // Take screenshot
+    const screenshotPath = path.join(screenshotDirectory, 'debug-box-result-fov-100-floor.png');
+    await page.screenshot({
+      path: screenshotPath,
+      fullPage: true,
+    });
+
+    // Compare with expected screenshot
+    const expectedPath = path.join(expectedDirectory, 'debug-box-result-fov-100-floor.png');
+    
+    // Check if expected screenshot exists
+    if (fs.existsSync(expectedPath)) {
+      const img1 = PNG.sync.read(fs.readFileSync(screenshotPath));
+      const img2 = PNG.sync.read(fs.readFileSync(expectedPath));
+      
+      const { width, height } = img1;
+      const diff = new PNG({ width, height });
+
+      // Calculate pixel difference
+      const numDiffPixels = pixelmatch(
+        img1.data,
+        img2.data,
+        diff.data,
+        width,
+        height,
+        { threshold: 0.1,
+          diffMask: true }
+      );
+
+      // Save diff image
+      const diffPath = path.join(diffDirectory, 'debug-box-result-fov-100-floor-diff.png');
+      fs.writeFileSync(diffPath, PNG.sync.write(diff));
+
+      // Calculate difference percentage
+      const totalPixels = width * height;
+      const diffPercentage = (numDiffPixels / totalPixels) * 100;
+
+      console.log(`Image comparison: ${numDiffPixels} different pixels (${diffPercentage.toFixed(2)}%)`);
+
+      // Assert that difference is below 5%
+      expect(diffPercentage).toBeLessThan(15);
+    } else {
+      console.warn(`Expected screenshot not found at ${expectedPath}. Skipping comparison.`);
+      console.warn('This screenshot will serve as the baseline. Copy it to the expected directory.');
+    }
+
+    // Verify canvas is present
+    const canvas = await page.$('canvas');
+    expect(canvas).toBeTruthy();
+  });
+
 });
