@@ -17,13 +17,13 @@ export default async function Home() {
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {panoramas.map((panorama, index) => (
             <Link
-              key={panorama.filename}
+              key={panorama.src}
               href={`/inverse-sphere-scene?panorama=${index}`}
               className="group relative overflow-hidden rounded-lg bg-white shadow-md transition-all hover:shadow-xl dark:bg-zinc-900"
             >
               <div className="relative aspect-video w-full overflow-hidden bg-zinc-200 dark:bg-zinc-800">
                 <Image
-                  src={`/panoramas/${panorama.filename}`}
+                  src={panorama.src}
                   alt={panorama.name}
                   fill
                   className="object-cover transition-transform duration-300 group-hover:scale-110"
@@ -35,7 +35,7 @@ export default async function Home() {
                   {panorama.name}
                 </h2>
                 <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
-                  {panorama.filename}
+                  {panorama.src}
                 </p>
               </div>
             </Link>

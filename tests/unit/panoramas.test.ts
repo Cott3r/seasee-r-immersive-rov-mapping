@@ -68,12 +68,12 @@ describe('getPanoramas', () => {
     const result = await getPanoramas();
 
     expect(result).toHaveLength(5);
-    expect(result.map((p) => p.filename)).toEqual([
-      'image1.jpg',
-      'image2.png',
-      'image3.jpeg',
-      'image4.webp',
-      'image5.avif',
+    expect(result.map((p) => p.src)).toEqual([
+      '/panoramas/image1.jpg',
+      '/panoramas/image2.png',
+      '/panoramas/image3.jpeg',
+      '/panoramas/image4.webp',
+      '/panoramas/image5.avif',
     ]);
   });
 
@@ -89,9 +89,9 @@ describe('getPanoramas', () => {
     const result = await getPanoramas();
 
     expect(result).toEqual([
-      { name: 'Coral Reef', filename: 'coral-reef.png' },
-      { name: 'Deep Ocean View', filename: 'deep_ocean-view.jpeg' },
-      { name: 'Underwater Scene', filename: 'underwater_scene.jpg' },
+      { name: 'Coral Reef', src: '/panoramas/coral-reef.png' },
+      { name: 'Deep Ocean View', src: '/panoramas/deep_ocean-view.jpeg' },
+      { name: 'Underwater Scene', src: '/panoramas/underwater_scene.jpg' },
     ]);
   });
 
@@ -127,10 +127,10 @@ describe('getPanoramas', () => {
     const result = await getPanoramas();
 
     expect(result).toHaveLength(3);
-    expect(result.map((p) => p.filename)).toEqual([
-      'image1.JPG',
-      'image2.PNG',
-      'image3.JpEg',
+    expect(result.map((p) => p.src)).toEqual([
+      '/panoramas/image1.JPG',
+      '/panoramas/image2.PNG',
+      '/panoramas/image3.JpEg',
     ]);
   });
 
@@ -190,9 +190,9 @@ describe('getPanoramas', () => {
     const result = await getPanoramas();
 
     expect(result[0]).toHaveProperty('name');
-    expect(result[0]).toHaveProperty('filename');
+    expect(result[0]).toHaveProperty('src');
     expect(typeof result[0].name).toBe('string');
-    expect(typeof result[0].filename).toBe('string');
+    expect(typeof result[0].src).toBe('string');
   });
 
   it('should handle single word filenames correctly', async () => {
@@ -206,8 +206,8 @@ describe('getPanoramas', () => {
     const result = await getPanoramas();
 
     expect(result).toEqual([
-      { name: 'Ocean', filename: 'ocean.jpg' },
-      { name: 'Reef', filename: 'reef.png' },
+      { name: 'Ocean', src: '/panoramas/ocean.jpg' },
+      { name: 'Reef', src: '/panoramas/reef.png' },
     ]);
   });
 
@@ -222,8 +222,8 @@ describe('getPanoramas', () => {
     const result = await getPanoramas();
 
     expect(result).toEqual([
-      { name: '2024 Expedition', filename: '2024-expedition.png' },
-      { name: 'Dive Site 123', filename: 'dive-site-123.jpg' },
+      { name: '2024 Expedition', src: '/panoramas/2024-expedition.png' },
+      { name: 'Dive Site 123', src: '/panoramas/dive-site-123.jpg' },
     ]);
   });
 });

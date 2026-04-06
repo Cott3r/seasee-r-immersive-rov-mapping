@@ -1,7 +1,7 @@
-import type { PanoramaItem } from "../types";
+import {Panorama} from "@/utils/panorama-file-scanner";
 
 type PanoramaSelectorProps = {
-  panoramas: PanoramaItem[];
+  panoramas: Panorama[];
   selectedIndex: number;
   onSelect: (index: number) => void;
 };
@@ -24,7 +24,7 @@ export function PanoramaSelector({
               : "bg-white/10 hover:bg-white/20"
           }`}
         >
-          {panorama.label}
+          {panorama.name}
         </button>
       ))}
     </div>

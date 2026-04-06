@@ -3,7 +3,7 @@ import path from "path";
 
 export interface Panorama {
   name: string;
-  filename: string;
+  src: string;
 }
 
 /**
@@ -52,8 +52,8 @@ export async function getPanoramas(): Promise<Panorama[]> {
         .join(" ");
 
       return {
-        name,
-        filename,
+        name: name,
+        src: `/panoramas/${filename}`,
       };
     });
 
