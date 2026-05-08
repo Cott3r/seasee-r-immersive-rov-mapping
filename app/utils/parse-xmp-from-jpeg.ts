@@ -10,8 +10,14 @@ export function parseXmpFromJpeg(arrayBuffer: ArrayBuffer): XmpData | null {
 
   const xmp = text.slice(xmpStart, xmpEnd + "</x:xmpmeta>".length);
 
+  // console.log("xmp " + xmp);
   const get = (tag: string) => {
-    const match = xmp.match(new RegExp(`GPano:${tag}="([^"]+)"`));
+    // Try attribute format first (e.g., GPano:Tag="value")
+    let match = xmp.match(new RegExp(`GPano:${tag}="([^"]+)"`));
+    if (match) return Number(match[1]);
+    
+    // Try element format (e.g., <GPano:Tag>value</GPano:Tag>)
+    match = xmp.match(new RegExp(`<GPano:${tag}>([^<]+)</GPano:${tag}>`));
     return match ? Number(match[1]) : null;
   };
 
