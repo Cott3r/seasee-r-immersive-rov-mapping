@@ -46,16 +46,24 @@ export function createEquirectangularMaterial() {
         float fullPixelY = clamp(fullV * fullHeight, 0.0, fullHeight);
         
         // Check if this pixel falls within the cropped area
-        if (fullPixelX < cropLeft || fullPixelX > (cropLeft + cropWidth) ||
-            fullPixelY < cropTop || fullPixelY > (cropTop + cropHeight)) {
-          discard;
-        }
+        // if (fullPixelX < cropLeft || fullPixelX > (cropLeft + cropWidth) ||
+        //     fullPixelY < cropTop || fullPixelY > (cropTop + cropHeight)) {
+        //   discard;
+        // }
         
         // Map to texture coordinates within the cropped image
         float textureU = 1.0 - (fullPixelX - cropLeft) / cropWidth;
         float textureV = 1.0 - ((fullPixelY - cropTop) / cropHeight);
         
-        gl_FragColor = texture2D(map, vec2(textureU, textureV));
+        //Test with the textureUV that can be calculated through one matrix multiplication
+        vec2 textureUV = vec2(textureU, textureV);
+        
+        // Check if this pixel falls within the cropped area
+        if (textureUV.x < 0.0 || textureUV.x > 1.0 || textureUV.y < 0.0 || textureUV.y > 1.0) {
+          discard;
+        }
+        
+        gl_FragColor = texture2D(map, textureUV);
       }
     `,
     wireframe: false

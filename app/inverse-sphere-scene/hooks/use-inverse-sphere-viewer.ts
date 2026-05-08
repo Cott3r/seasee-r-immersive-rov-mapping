@@ -8,11 +8,19 @@ import { parseXmpFromJpeg } from "@/utils/parse-xmp-from-jpeg";
 type UseInverseSphereViewerArgs = {
   mountRef: RefObject<HTMLDivElement | null>;
   panoramaSrc: string;
+  initialYaw?: number;
+  initialPitch?: number;
+  initialFov?: number;
+  onViewChange?: (view: { yaw: number; pitch: number; fov: number }) => void;
 };
 
 export function useInverseSphereViewer({
   mountRef,
   panoramaSrc,
+  initialYaw = 0,
+  initialPitch = 0,
+  initialFov = 75,
+  onViewChange,
 }: UseInverseSphereViewerArgs) {
   useEffect(() => {
     const mount = mountRef.current;
@@ -29,6 +37,8 @@ export function useInverseSphereViewer({
     );
     const baseFov = camera.fov;
     const basePointerSensitivity = 0.005;
+    camera.fov = THREE.MathUtils.clamp(initialFov, 1, 100);
+    camera.updateProjectionMatrix();
     camera.position.set(0, 0, 0);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -109,11 +119,19 @@ export function useInverseSphereViewer({
     applyTexture(panoramaSrc);
 
     const state = {
-      yaw: 0,
-      pitch: 0,
+      yaw: initialYaw,
+      pitch: THREE.MathUtils.clamp(initialPitch, -Math.PI / 2.0, Math.PI / 2.0),
       isDragging: false,
       lastX: 0,
       lastY: 0,
+    };
+
+    const notifyViewChange = () => {
+      onViewChange?.({
+        yaw: state.yaw,
+        pitch: state.pitch,
+        fov: camera.fov,
+      });
     };
 
     const updateCameraRotation = () => {
@@ -122,9 +140,10 @@ export function useInverseSphereViewer({
     };
 
     updateCameraRotation();
+    notifyViewChange();
 
     // Expose to window for testing purposes
-    if (typeof window !== "undefined" && (process.env.NEXT_PUBLIC_ENABLE_TEST_GLOBALS === 'true')) {
+    if (typeof window !== "undefined" && (process.env.NODE_ENV === 'development' || process.env.NEXT_PUBLIC_ENABLE_TEST_GLOBALS === 'true')) {
       (window as Window).camera = camera;
       (window as Window).renderer = renderer;
       (window as Window).scene = scene;
@@ -158,6 +177,7 @@ export function useInverseSphereViewer({
       state.lastY = event.clientY;
 
       updateCameraRotation();
+      notifyViewChange();
     };
 
     const onPointerUp = () => {
@@ -168,6 +188,7 @@ export function useInverseSphereViewer({
       event.preventDefault();
       camera.fov = THREE.MathUtils.clamp(camera.fov + event.deltaY * 0.02, 1, 100);
       camera.updateProjectionMatrix();
+      notifyViewChange();
     };
 
     const resize = () => {
@@ -219,5 +240,5 @@ export function useInverseSphereViewer({
         mount.removeChild(renderer.domElement);
       }
     };
-  }, [mountRef, panoramaSrc]);
+  }, [mountRef, panoramaSrc, initialYaw, initialPitch, initialFov, onViewChange]);
 }
